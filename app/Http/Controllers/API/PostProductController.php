@@ -10,19 +10,20 @@ use App\Jobs\SendProductCreatedNotificationJob;
 
 class PostProductController extends Controller
 {
-    
+
     public function __invoke(ProductRequest $request)
     {
         $adminRole = config('products.role');
 
-        
+        if ($request->user()->role === $adminRole) {
             $data = $request->validated();
             $product = Product::create($data);
             $product->data = $data['data'];
             $product->save();
             $product->update(['data' => $data['data']]);
-          //  SendProductCreatedNotificationJob::dispatch();
-
-        
+            SendProductCreatedNotificationJob::dispatch();
+        } else {
+            return response()->json(['error' => 'Доступ запрещен'], 403);
+        }
     }
 }

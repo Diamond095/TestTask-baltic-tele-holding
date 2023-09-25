@@ -31,7 +31,7 @@ class SendProductCreatedNotificationJob implements ShouldQueue
 {
     $email = config('products.email');
 
-    Notification::sendNow($email, new ProductCreatedNotification());
+    Notification::send($email, new ProductCreatedNotification());
 }
 
 }
